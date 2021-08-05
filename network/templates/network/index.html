@@ -1,0 +1,44 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <h3>All Posts</h3>
+    {% if user.is_authenticated%}
+    <div id="add-post" class='card'>
+        <div class='card-body'>
+            <h5>New Post</h5>
+            <form class="add-post-form" action="{% url 'post' %}" method="post">
+                <textarea class="form-control" name="content"></textarea>
+                <input type='submit' class='btn btn-primary' value="Post">
+            </form>
+        </div>
+    </div>
+    {%endif%}
+
+    <div id="all-posts">
+        {% for post in posts%}
+       <div class="card view-post mt-3" class={{ post.id }}>
+       <div class='card-body'>
+        <a href={% url "profile" post.user %}><b>{{ post.user }}</b></a> · <span class='text-muted'>{{ post.timestamp}}</span>
+        {% if user == post.user %}
+        <a href={% url 'edit' post.id %}>Edit</a>
+        {%endif%}
+        <p>{{ post.content}}</p><hr>
+        <div class="row">
+            <span class="col-1"><i class="far fa-comment"></i></span>
+            <a class="col-1 like-btn" data-postid={{ post.id }}>
+                <i {% if post in post_liked %}class="fas fa-heart" {% else %}class="far fa-heart"{% endif %}></i>
+                <span class='like-numbers' data-postid={{ post.id }}></span>
+            </a>
+        </div>
+       </div>
+       </div>
+       {% endfor %}
+    </div>
+    </ul>
+</nav>
+{% endblock %}
+
+{% block script%} 
+    <script src="{% static 'network/index.js' %}"></script>
+{% endblock %}
